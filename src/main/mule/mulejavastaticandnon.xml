@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ba86cbd6-c6d7-4efa-923a-03d175f29b93" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="mulejavastaticandnonFlow" doc:id="d4fac776-6541-4404-9836-961b519f3a0e" >
+		<http:listener doc:name="Listener" doc:id="b0e4ae1a-ad3e-46ec-9f05-af6e5a103e2a" config-ref="HTTP_Listener_config" path="/staticandnonstatic"/>
+		<java:invoke-static doc:name="Invoke static" doc:id="9600f0ec-eba5-4606-bcf7-f3a9b32a19a2" class="mulejavastaticandnon.staticndnonstatic" method="welcome(java.lang.String)">
+			<java:args ><![CDATA[#[{
+       arg0: attributes.queryParams.name as String
+}]]]></java:args>
+		</java:invoke-static>
+		<logger level="INFO" doc:name="Logger" doc:id="c40da595-5f75-4e70-8618-e670205f8e87" message="#[payload]"/>
+	</flow>
+	<flow name="mulejavastaticandnonFlow1" doc:id="1f1daa2b-89cc-4270-90bc-f44e8a36d24a" >
+		<http:listener doc:name="Listener" doc:id="3dabbb59-9629-4291-a213-7211f99bac53" config-ref="HTTP_Listener_config" path="/nonstatic"/>
+		<java:new constructor="staticndnonstatic()" doc:name="New" doc:id="17599741-b2aa-4f34-8fc3-2f890459b0c5" class="mulejavastaticandnon.staticndnonstatic" target="objNonstatic"/>
+		<java:invoke method="getBalance(java.lang.String)" doc:name="Invoke" doc:id="57bc5b09-fe36-4118-9898-090bf1df2887" instance="#[vars.objNonstatic]" class="mulejavastaticandnon.staticndnonstatic">
+			<java:args ><![CDATA[#[{
+    arg0: attributes.queryParams.bankName as String
+
+}]]]></java:args>
+		</java:invoke>
+		<logger level="INFO" doc:name="Logger" doc:id="06f64cb9-0026-470b-b493-d9322c3f42b2" message="#[payload]"/>
+	</flow>
+</mule>
